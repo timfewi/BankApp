@@ -39,3 +39,100 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 	)
 	return i, err
 }
+
+const deleteAccount = `-- name: DeleteAccount :exec
+DELETE FROM account
+WHERE id = $1
+`
+
+func (q *Queries) DeleteAccount(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteAccount, id)
+	return err
+}
+
+const getAccount = `-- name: GetAccount :one
+SELECT id, owner, balance, currency, created_at FROM account
+WHERE id = $1
+LIMIT 1
+`
+
+func (q *Queries) GetAccount(ctx context.Context, id int64) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getAccount, id)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.Owner,
+		&i.Balance,
+		&i.Currency,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getAccounts = `-- name: GetAccounts :many
+SELECT id, owner, balance, currency, created_at FROM account
+WHERE owner = $1
+ORDER BY id DESC
+OFFSET $2
+LIMIT $3
+`
+
+type GetAccountsParams struct {
+	Owner  string `json:"owner"`
+	Offset int32  `json:"offset"`
+	Limit  int32  `json:"limit"`
+}
+
+func (q *Queries) GetAccounts(ctx context.Context, arg GetAccountsParams) ([]Account, error) {
+	rows, err := q.db.QueryContext(ctx, getAccounts, arg.Owner, arg.Offset, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Account
+	for rows.Next() {
+		var i Account
+		if err := rows.Scan(
+			&i.ID,
+			&i.Owner,
+			&i.Balance,
+			&i.Currency,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateAccountBalance = `-- name: UpdateAccountBalance :one
+UPDATE account
+SET balance = $2
+WHERE id = $1
+RETURNING id, owner, balance, currency, created_at
+`
+
+type UpdateAccountBalanceParams struct {
+	ID      int64 `json:"id"`
+	Balance int64 `json:"balance"`
+}
+
+func (q *Queries) UpdateAccountBalance(ctx context.Context, arg UpdateAccountBalanceParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, updateAccountBalance, arg.ID, arg.Balance)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.Owner,
+		&i.Balance,
+		&i.Currency,
+		&i.CreatedAt,
+	)
+	return i, err
+}
