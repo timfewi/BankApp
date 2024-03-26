@@ -42,8 +42,13 @@ jobs:
 
         - name: Install golang-migrate
           run: |
-            scoop install migrate
+            version=v4.14.1
+            os=linux
+            arch=amd64
+            curl -L https://github.com/golang-migrate/migrate/releases/download/${version}/migrate.${os}-${arch}.tar.gz | tar xvz -C /tmp
+            sudo mv /tmp/migrate /usr/local/bin/migrate
             migrate -version
+          
 
         - name: Database Migration
           env:
