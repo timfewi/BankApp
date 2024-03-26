@@ -51,7 +51,7 @@ jobs:
           
 
         - name: Database Migration
-          run: migrate -path db/migration -database "postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ env.POSTGRES_HOST }}:${{ env.POSTGRES_PORT }}/${{ secrets.POSTGRES_DB }}?sslmode=disable" -verbose up
+          run: migrate -path db/migration -database "postgresql://konta:1683@localhost:5433/bankApp?sslmode=disable" -verbose up
           env:
             POSTGRES_HOST: localhost
             POSTGRES_PORT: 5433
