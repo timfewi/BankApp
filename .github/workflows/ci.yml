@@ -40,6 +40,11 @@ jobs:
               sleep 2
             done
 
+        - name: Install golang-migrate
+          run: |
+            scoop install migrate
+            migrate -version
+
         - name: Database Migration
           env:
             POSTGRES_HOST: localhost
