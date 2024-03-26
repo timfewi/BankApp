@@ -2,10 +2,7 @@ module github.com/timfewi/BankApp
 
 go 1.22.1
 
-require (
-	github.com/lib/pq v1.10.9
-	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8
-)
+require github.com/lib/pq v1.10.9
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
