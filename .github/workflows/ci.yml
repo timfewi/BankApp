@@ -42,12 +42,15 @@ jobs:
         
         - name: Install golang-migrate
           run: |
-            version=v4.14.1
-            os=linux
-            arch=amd64
-            curl -L https://github.com/golang-migrate/migrate/releases/download/${version}/migrate.${os}-${arch}.tar.gz | tar xvz
-            sudo mv migrate /usr/local/bin/migrate
-            migrate -version
+           version=v4.14.1
+           os=linux
+           arch=amd64
+           mkdir -p migrate-temp
+           curl -L https://github.com/golang-migrate/migrate/releases/download/${version}/migrate.${os}-${arch}.tar.gz | tar xvz -C migrate-temp
+           sudo mv migrate-temp/migrate /usr/local/bin/migrate
+           rm -rf migrate-temp
+           migrate -version
+          
           
 
         - name: Database Migration
