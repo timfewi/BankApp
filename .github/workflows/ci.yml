@@ -42,15 +42,12 @@ jobs:
 
         - name: Install golang-migrate
           run: |
-            version=v4.14.1
-            os=linux
-            arch=amd64
-            curl -L https://github.com/golang-migrate/migrate/releases/download/${version}/migrate.${os}-${arch}.tar.gz -o migrate.tar.gz
-            mkdir -p migrate-extract
-            tar -xvzf migrate.tar.gz -C migrate-extract
-            sudo mv migrate-extract/migrate /usr/local/bin/migrate
-            rm -rf migrate-extract migrate.tar.gz
+            curl -L https://packagecloud.io/golang-migrate/migrate/gpgkey | sudo apt-key add -
+            echo "deb https://packagecloud.io/golang-migrate/migrate/ubuntu/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/migrate.list
+            sudo apt-get update
+            sudo apt-get install -y migrate
             migrate -version
+
           
 
         - name: Database Migration
