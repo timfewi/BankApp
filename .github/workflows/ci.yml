@@ -61,7 +61,7 @@ jobs:
           run: migrate -path db/migration -database "postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ env.POSTGRES_HOST }}:${{ env.POSTGRES_PORT }}/${{ secrets.POSTGRES_DB }}?sslmode=disable" -verbose up
           env:
             POSTGRES_HOST: localhost
-            POSTGRES_PORT: 5433
+            POSTGRES_PORT: 5433go get -u github.com/gin-gonic/gingo get -u github.com/gin-gonic/gingo get -u github.com/gin-gonic/gin
             POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
             POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
             POSTGRES_DB: ${{ secrets.POSTGRES_DB }}

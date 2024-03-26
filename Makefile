@@ -13,6 +13,8 @@ migrateup:
 migratedown:
 	migrate -path db/migration -database "postgresql://konta:1683@localhost:5433/bankApp?sslmode=disable" -verbose down
 
+server:
+	go run main.go
 
 sqlc:
 	sqlc generate
@@ -20,5 +22,6 @@ sqlc:
 test:
 	go test -v -cover ./...
 
-.PHONY: createdb dropdb postgres migrateup migratedown sqlc
+.PHONY: createdb dropdb postgres migrateup migratedown sqlc test server
+
 
